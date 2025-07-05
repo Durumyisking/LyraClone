@@ -14,7 +14,7 @@ enum class ELCExperienceLoadState
 	Deactivating,
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnLCExperienceLoaded, const ULCExperienceDefinition*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLCExperienceLoaded, const class ULCExperienceDefinition*);
 
 /**
 ULCExperienceManagerComponent

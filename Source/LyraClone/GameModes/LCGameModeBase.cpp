@@ -4,9 +4,11 @@
 #include "GameModes/LCGameModeBase.h"
 #include "LCExperienceManagerComponent.h"
 #include "LCGameState.h"
+#include "LCLog.h"
 #include "Player/LCPlayerController.h"
 #include "Player/LCPlayerState.h"
 #include "Character/LCCharacter.h"
+
 
 ALCGameModeBase::ALCGameModeBase()
 {
@@ -42,11 +44,36 @@ void ALCGameModeBase::InitGameState()
 	ExperienceManagerComponent->CallorRegister_OnExperienceLoaded((FOnLCExperienceLoaded::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded)));
 }
 
+void ALCGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	if (IsExperienceLoaded())
+	{
+		// 이거 실행 안하면 SpawnDefaultPawnAtTransform_Implementation같은 다음 프로세스의  함수들 호출이 되지 않는다.
+		Super::HandleStartingNewPlayer_Implementation(NewPlayer); 
+	}
+}
+
+APawn* ALCGameModeBase::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer,
+	const FTransform& SpawnTransform)
+{
+	UE_LOG(LogLC, Log, TEXT("SpawnDefaultPawnAtTransform_Implementation is Called!"));
+	return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, SpawnTransform);
+}
+
 void ALCGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 {
 	// 우리는 Experience로딩을 선택하는 과정에서만 쓸건데
 	// 라이라에서는 지금 Experience가(데디서버든, 에디터모드든) 예상된 것이 들어왔는지 아닌지 확인하는 함수로 쓰인다고 한다.
 	
+}
+
+bool ALCGameModeBase::IsExperienceLoaded() const
+{
+	check(GameState);
+	ULCExperienceManagerComponent* ExperienceManagerComponent = GameState->FindComponentByClass<ULCExperienceManagerComponent>();
+	check(ExperienceManagerComponent);
+
+	return ExperienceManagerComponent->IsExperienceLoaded();
 }
 
 void ALCGameModeBase::OnExperienceLoaded(const class ULCExperienceDefinition* CurrentExperience)

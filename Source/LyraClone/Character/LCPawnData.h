@@ -22,5 +22,7 @@ public:
 		스킬은 어떻게 쓸지등의 정보를 가진다.	
 	*/
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LC|Pawn")
+	TSubclassOf<APawn> PawnClass;
 
 };
