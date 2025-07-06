@@ -34,9 +34,15 @@ public:
 	// OnExperienceLoaded에 바인딩하거나 Experience로딩이 완료되었다면 즉시 호출 
 	void CallorRegister_OnExperienceLoaded(FOnLCExperienceLoaded::FDelegate&& Delegate);
 
+	void ServerSetCurrentExperience(FPrimaryAssetId ExperienceId);
+
+	void StartExperienceLoad();
+	void OnExperienceLoadComplete();
+	void OnExperienceFullLoadCompleted();
+
 public:
 	UPROPERTY()
-	TObjectPtr<class ULCExperienceDefinition> CurrentExperience;
+	TObjectPtr<const class ULCExperienceDefinition> CurrentExperience;
 
 	// Experience상태 모니터링
 	ELCExperienceLoadState LoadState = ELCExperienceLoadState::Unloaded;

@@ -46,7 +46,7 @@ void ALCGameModeBase::InitGameState()
 
 void ALCGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	if (IsExperienceLoaded())
+		if (IsExperienceLoaded())
 	{
 		// 이거 실행 안하면 SpawnDefaultPawnAtTransform_Implementation같은 다음 프로세스의  함수들 호출이 되지 않는다.
 		Super::HandleStartingNewPlayer_Implementation(NewPlayer); 
@@ -64,7 +64,35 @@ void ALCGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 {
 	// 우리는 Experience로딩을 선택하는 과정에서만 쓸건데
 	// 라이라에서는 지금 Experience가(데디서버든, 에디터모드든) 예상된 것이 들어왔는지 아닌지 확인하는 함수로 쓰인다고 한다.
-	
+
+	// 해당 함수에서는 우리가 로딩할 Experience에 대해 PrimaryAssetId를 생성하여, OnMatchAssignmentGiven으로 넘긴다.
+
+	FPrimaryAssetId ExperienceId;
+
+	// precedence order (highest wins)
+	// - matchmaking assignment (if present)
+	// - default experience
+
+	UWorld* World = GetWorld();
+
+	// fall back to the default experience
+	// 일단 기본 옵션으로 default하게 B_LcDefaultExperience로 설정 하자
+	if (!ExperienceId.IsValid())
+	{
+		ExperienceId = FPrimaryAssetId(FPrimaryAssetType("LCExperienceDefinition"), FName("B_LCDefaultExperience"));
+	}
+
+	OnMatchAssignmentGiven(ExperienceId);
+}
+
+void ALCGameModeBase::OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId)
+{
+	// ExperienceManagerComponent로 Experience를 로딩하기 위해, ExperienceManagerComponent의 ServerSetCurrentExperience를 호출한다.
+	check(ExperienceId.IsValid());
+
+	ULCExperienceManagerComponent* ExperienceManagerComponent = GameState->FindComponentByClass<ULCExperienceManagerComponent>();
+	check(ExperienceManagerComponent);
+	ExperienceManagerComponent->ServerSetCurrentExperience(ExperienceId);
 }
 
 bool ALCGameModeBase::IsExperienceLoaded() const
