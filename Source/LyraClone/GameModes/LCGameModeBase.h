@@ -18,6 +18,7 @@ public:
 
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	virtual void InitGameState() override;
+	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) final;
 
 	// BPNativeEvent 매크로 처리 되어있음
 	// BP에서는 바로 재정의 가능하고
@@ -31,4 +32,5 @@ public:
 	void OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId);
 	bool IsExperienceLoaded() const;
 	void OnExperienceLoaded(const class ULCExperienceDefinition* CurrentExperience);
+	const class ULCPawnData* GetPawnDataForController(const AController* InController) const;
 };

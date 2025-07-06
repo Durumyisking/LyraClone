@@ -24,6 +24,9 @@ public:
 	*/
 
 	void OnExperienceLoaded(const class ULCExperienceDefinition* CurrentExperience);
+	template<class T>
+	const T* GetPawnData() const { return Cast<T>(PawnData);}
+	void SetPawnData(const class ULCPawnData* InPawnData);
 
 	/*
 	 * 나중에 Gas쓸때 AbilitySystemComponent를 얘가 들고있을건데

@@ -4,6 +4,8 @@
 #include "Player/LCPlayerState.h"
 #include "GameModes/LCExperienceDefinition.h"
 #include "GameModes/LCExperienceManagerComponent.h"
+#include "Character/LCPawnData.h"
+#include "GameModes/LCGameModeBase.h"
 
 void ALCPlayerState::PostInitializeComponents()
 {
@@ -19,8 +21,25 @@ void ALCPlayerState::PostInitializeComponents()
 	ExperienceManagerComponent->CallorRegister_OnExperienceLoaded(FOnLCExperienceLoaded::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded));
 }
 
+
 void ALCPlayerState::OnExperienceLoaded(const class ULCExperienceDefinition* CurrentExperience)
 {
-//	CurrentExperience->
+	if (ALCGameModeBase* GameMode = GetWorld()->GetAuthGameMode<ALCGameModeBase>())
+	{
+		const ULCPawnData* NewPawnData = GameMode->GetPawnDataForController(GetOwningController());
+		check( NewPawnData);
+
+		SetPawnData(NewPawnData);
+	}
+}
+
+
+void ALCPlayerState::SetPawnData(const ULCPawnData* InPawnData)
+{
+	check(InPawnData);
+
+	// PawnData가 두번 설정되는 것은 원하지 않음
+	check(!PawnData);
 	
+	PawnData = InPawnData;
 }

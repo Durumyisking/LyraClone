@@ -2,13 +2,15 @@
 
 
 #include "GameModes/LCGameModeBase.h"
+
+#include "LCExperienceDefinition.h"
 #include "LCExperienceManagerComponent.h"
 #include "LCGameState.h"
 #include "LCLog.h"
 #include "Player/LCPlayerController.h"
 #include "Player/LCPlayerState.h"
 #include "Character/LCCharacter.h"
-
+#include "Character/LCPawnData.h"
 
 ALCGameModeBase::ALCGameModeBase()
 {
@@ -23,7 +25,7 @@ void ALCGameModeBase::InitGame(const FString& MapName, const FString& Options, F
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
 
-
+	
 	// 한 프레임 뒤로 미루는 이유는
 	// Experience의 로딩은 ExperienceManagerComponent에서 맡는데 Init 게임 시점에서는 해당 컴포넌트를 가지는 액터가 스폰되어있지 않다.
 	// 그래서 스폰이후로 시점을 잡기위해 타이머로 한 틱 미룬다.
@@ -42,6 +44,20 @@ void ALCGameModeBase::InitGameState()
 
 	// OnExperienceLoaded 등록
 	ExperienceManagerComponent->CallorRegister_OnExperienceLoaded((FOnLCExperienceLoaded::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded)));
+}
+
+UClass* ALCGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
+{
+	// GetPawnDataForController를 활용해 PawnData로부터 PawnClass를 유도한다.
+	if (const ULCPawnData* PawnData = GetPawnDataForController(InController))
+	{
+		if (PawnData->PawnClass)
+		{
+			return PawnData->PawnClass;
+		}
+	}
+	
+	return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
 
 void ALCGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
@@ -106,4 +122,48 @@ bool ALCGameModeBase::IsExperienceLoaded() const
 
 void ALCGameModeBase::OnExperienceLoaded(const class ULCExperienceDefinition* CurrentExperience)
 {
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PC = Cast<APlayerController>(*Iterator);
+
+		// PlayerController가 Pawn을 Possess하지 않았다면 RestartPawn을 통해 다시 spawn
+		// 한 번 OnPossess를 보도록 하자
+		if (PC && PC->GetPawn() == nullptr)
+		{
+			if (PlayerCanRestart(PC))
+			{
+				RestartPlayer(PC);
+			}
+		}
+	}
+}
+
+const ULCPawnData* ALCGameModeBase::GetPawnDataForController(const AController* InController) const
+{
+	// 게임 도중에 PawnData가 Override 되었을 경우, PawnData는 PlayerState에서 가져오게 됨
+	if (InController)
+	{
+		if (const ALCPlayerState* LCPS = InController->GetPlayerState<ALCPlayerState>())
+		{	
+			if (const ULCPawnData* PawnData = LCPS->GetPawnData<ULCPawnData>())
+			{
+				return PawnData;	
+			}
+		}
+	}
+
+	// 아직 PlayerState에 PawnData가 없으면 ExperienceManagerComponent의 CurrentExperience를 가져와서 설정
+	check(GameState);
+	ULCExperienceManagerComponent* ExperienceManagerComponent = GameState->FindComponentByClass<ULCExperienceManagerComponent>();
+	check(ExperienceManagerComponent);
+
+	if (ExperienceManagerComponent->IsExperienceLoaded())
+	{
+		const ULCExperienceDefinition* Experience = ExperienceManagerComponent->GetCurrentExperinenceChecked();
+		if (Experience->DefaultPawnData)
+		{
+			return Experience->DefaultPawnData;
+		}
+	}
+	return nullptr;
 }

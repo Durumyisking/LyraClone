@@ -40,6 +40,8 @@ public:
 	void OnExperienceLoadComplete();
 	void OnExperienceFullLoadCompleted();
 
+	const ULCExperienceDefinition* GetCurrentExperinenceChecked() const;
+
 public:
 	UPROPERTY()
 	TObjectPtr<const class ULCExperienceDefinition> CurrentExperience;

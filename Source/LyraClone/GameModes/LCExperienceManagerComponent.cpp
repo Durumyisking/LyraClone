@@ -55,18 +55,17 @@ void ULCExperienceManagerComponent::StartExperienceLoad()
 {
 	check(CurrentExperience);
 	check(LoadState == ELCExperienceLoadState::Unloaded); // 로드 되어있으면 안된다
-	
 	LoadState = ELCExperienceLoadState::Loading;
 
 	ULCAssetManager& AssetManager = ULCAssetManager::Get();
 
 	TSet<FPrimaryAssetId> BundleAssetList;
-	// AssetManager.GetPrimaryAssetId()의 결과로
+	// CurrentExperience->GetPrimaryAssetId()의 결과로
 	// ALCGameModeBase::HandleMatchAssignmentIfNotExpectingOne 여기서 해준
-	// FPrimaryAssetId(FPrimaryAssetType("LCExperienceDefinition"), FName("B_LCDefaultExperience"));
-	// 해당 Id가 불러와 진다고 한다.
-	// 근데 None이 불러와지는데..?
-	BundleAssetList.Add(AssetManager.GetPrimaryAssetId());  
+	// FPrimaryAssetId(FPrimaryAssetType("LCExperienceDefinition"), FName("B_LCDefaultExperience")); 해당 Id가 불러와 진다고 한다.
+	// 왜냐하면 B_LCDefaultExperience가 ULCExperienceDefinition이고 CurrentExperience가 FPrimaryAssetType("LCExperienceDefinition"), FName("B_LCDefaultExperience")불러와서 만든거니까
+	BundleAssetList.Add(CurrentExperience->GetPrimaryAssetId());
+	// 만약 여기서 CurrentExperience의 에셋 클래스를 다른 BP로 바꾸면 GetPrimaryAssetId했을때 해당 BP받아와짐
 
 	// load assets associated with the experience
 	// 아래는 우리가 후일 GameFeature를 사용하여, Experience에 바인딩된 GameFeature Plugin을 로딩할 Bundle 이름을 추가한다.
@@ -132,5 +131,12 @@ void ULCExperienceManagerComponent::OnExperienceFullLoadCompleted()
 	LoadState = ELCExperienceLoadState::Loaded;
 	OnExperienceLoaded.Broadcast(CurrentExperience);
 	OnExperienceLoaded.Clear();
+}
+
+const ULCExperienceDefinition* ULCExperienceManagerComponent::GetCurrentExperinenceChecked() const
+{
+	check(LoadState==ELCExperienceLoadState::Loaded);
+	check(CurrentExperience != nullptr);
+	return CurrentExperience;
 }
 	
