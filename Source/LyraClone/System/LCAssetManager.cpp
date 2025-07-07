@@ -3,9 +3,17 @@
 
 #include "System/LCAssetManager.h"
 #include "LCLog.h"
+#include "LCGameplayTags.h"
 
 ULCAssetManager::ULCAssetManager()
 {
+}
+
+void ULCAssetManager::StartInitialLoading()
+{
+	Super::StartInitialLoading();
+
+	FLCGameplayTags::InitializeNativeTags(); // 에디터도 실행 전에 호출된다.
 }
 
 ULCAssetManager& ULCAssetManager::Get()

@@ -15,6 +15,8 @@ class LYRACLONE_API ULCAssetManager : public UAssetManager
 	GENERATED_BODY()
 public:
 	ULCAssetManager();
+
+	virtual void StartInitialLoading() override;
 	
 	static ULCAssetManager& Get();
 
