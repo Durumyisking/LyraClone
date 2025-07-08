@@ -2,13 +2,17 @@
 
 
 #include "Character/LCCharacter.h"
+#include "LCPawnExtensionComponent.h"
 
 // Sets default values
 ALCCharacter::ALCCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+	PrimaryActorTick.bCanEverTick = false;
 
+	// create pawn ext Comp
+	PawnExtensionComponent = CreateDefaultSubobject<ULCPawnExtensionComponent>("PawnExtensionComponent");;
 }
 
 // Called when the game starts or when spawned
