@@ -20,12 +20,29 @@ public:
 	static const FName NAME_ActorFeatureName;
 
 	/*
+	 * Member Method
+	 */
+	static ULCPawnExtensionComponent* FindPawnExtensionComponent(class AActor* Actor) { return Actor? Actor->FindComponentByClass<ULCPawnExtensionComponent>() : nullptr; }
+	template <class T>
+	const T* GetPawnData() const { return Cast<T>(PawnData);}
+	void SetPawnData(const class ULCPawnData* InPawnData);
+	void SetupPlayerInputComponent();
+	/*
 	 * pawn component interface
 	 */
+	virtual void OnRegister() final;
+	virtual void BeginPlay() final;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) final;
 
-	virtual void OnRegister() override;
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
+	/*
+	 * IGameFrameworkInitStateInterface
+	 */
 	virtual FName GetFeatureName() const final {return NAME_ActorFeatureName;}
+	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) final;
+	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
+	virtual void CheckDefaultInitialization() final;
+
+	// PawnData 캐싱
+	UPROPERTY(EditInstanceOnly, Category = "LC|Pawn")
+	TObjectPtr<const class ULCPawnData> PawnData;
 };

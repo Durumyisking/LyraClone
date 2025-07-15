@@ -11,6 +11,7 @@
 #include "Player/LCPlayerState.h"
 #include "Character/LCCharacter.h"
 #include "Character/LCPawnData.h"
+#include "Character/LCPawnExtensionComponent.h"
 
 ALCGameModeBase::ALCGameModeBase()
 {
@@ -72,8 +73,30 @@ void ALCGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* 
 APawn* ALCGameModeBase::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer,
 	const FTransform& SpawnTransform)
 {
-	UE_LOG(LogLC, Log, TEXT("SpawnDefaultPawnAtTransform_Implementation is Called!"));
-	return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, SpawnTransform);
+	UE_LOG(LogLC, Log, TEXT("SpawnDefaultPawnAtTransform_Implementation is Called! (Pawn Spawned On World!!)"));
+
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.ObjectFlags |= RF_Transient;
+	SpawnInfo.bDeferConstruction = true;
+
+	if (UClass * PawnClass = GetDefaultPawnClassForController(NewPlayer))
+	{
+		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
+		{
+			if (ULCPawnExtensionComponent* PawnExtensionComponent = ULCPawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
+			{
+				if (const ULCPawnData* PawnData = GetPawnDataForController(NewPlayer))
+				{
+					PawnExtensionComponent->SetPawnData(PawnData);
+				}
+			}
+			SpawnedPawn->FinishSpawning(SpawnTransform);
+			return SpawnedPawn;
+		}
+	}
+	
+	return nullptr;
 }
 
 void ALCGameModeBase::HandleMatchAssignmentIfNotExpectingOne()

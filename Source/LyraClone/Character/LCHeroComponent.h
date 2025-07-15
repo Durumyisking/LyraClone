@@ -19,4 +19,15 @@ class LYRACLONE_API ULCHeroComponent : public UPawnComponent, public IGameFramew
 public:
 	ULCHeroComponent(const FObjectInitializer& ObjectInitializer);
 
+	static const FName NAME_ActorFeatureName;
+	
+	virtual void OnRegister() final;
+	virtual void BeginPlay() final;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) final;
+
+	virtual FName GetFeatureName() const final {return NAME_ActorFeatureName;}
+	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) final;
+	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
+	virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)final;
+	virtual void CheckDefaultInitialization() final;
 };

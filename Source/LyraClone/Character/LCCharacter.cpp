@@ -34,5 +34,7 @@ void ALCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// 반드시 PlayerController가 존재하는 상태이기 때문에 Spawned->DataAvailable상태를 넘어갈 수 있다.
+	PawnExtensionComponent->SetupPlayerInputComponent();
 }
 
