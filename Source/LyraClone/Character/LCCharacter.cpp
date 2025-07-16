@@ -3,6 +3,7 @@
 
 #include "Character/LCCharacter.h"
 #include "LCPawnExtensionComponent.h"
+#include "Camera/LCCameraComponent.h"
 
 // Sets default values
 ALCCharacter::ALCCharacter()
@@ -13,6 +14,10 @@ ALCCharacter::ALCCharacter()
 
 	// create pawn ext Comp
 	PawnExtensionComponent = CreateDefaultSubobject<ULCPawnExtensionComponent>("PawnExtensionComponent");;
+
+	// create Camera Comp
+	CameraComponent = CreateDefaultSubobject<ULCCameraComponent>("CameraComponent");;
+	CameraComponent->SetRelativeLocation(FVector(-300.f, 0.f, 75.f));
 }
 
 // Called when the game starts or when spawned

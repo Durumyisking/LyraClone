@@ -13,5 +13,7 @@ UCLASS()
 class LYRACLONE_API ALCPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	ALCPlayerController(const FObjectInitializer& ObjectInitializer);
 };

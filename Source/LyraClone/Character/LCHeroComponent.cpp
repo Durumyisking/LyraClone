@@ -4,6 +4,7 @@
 #include "Character/LCHeroComponent.h"
 #include "LCLog.h"
 #include "LCGameplayTags.h"
+#include "Camera/LCCameraComponent.h"
 #include "Character/LCPawnExtensionComponent.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "Player/LCPlayerState.h"
@@ -119,7 +120,7 @@ void ULCHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Man
 	const FLCGameplayTags& InitTags = FLCGameplayTags::Get();
 
 	// DataAvailable -> DataInitialized성공 단계
-	if (CurrentState == InitTags.InitState_DataAvailable && CurrentState == InitTags.InitState_DataInitialized)
+	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState == InitTags.InitState_DataInitialized)
 	{
 		APawn* Pawn = GetPawn<APawn>();
 		ALCPlayerState* LCPS = GetPlayerState<ALCPlayerState>();
@@ -128,11 +129,19 @@ void ULCHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Man
 			return;
 		}
 
+		// Input, Camera Handling
 		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
 		const ULCPawnData* PawnData = nullptr;
 		if (ULCPawnExtensionComponent* PawnExtensionComponent = ULCPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
 		{
 			PawnData = PawnExtensionComponent->GetPawnData<ULCPawnData>();
+		}
+		if (bIsLocallyControlled && PawnData)
+		{
+			if ( ULCCameraComponent* CameraComponent = ULCCameraComponent::FindCameraComponent(Pawn))
+			{
+				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
+			}
 		}
 	}
 }
@@ -142,4 +151,22 @@ void ULCHeroComponent::CheckDefaultInitialization()
 	const FLCGameplayTags& InitTags = FLCGameplayTags::Get();
 	static const TArray<FGameplayTag> StateChain = { InitTags.InitState_Spawned, InitTags.InitState_DataAvailable, InitTags.InitState_DataInitialized, InitTags.InitState_GameplayReady };
 	ContinueInitStateChain(StateChain);
+}
+
+TSubclassOf< ULCCameraMode> ULCHeroComponent::DetermineCameraMode() const
+{
+	APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn)
+	{
+		return nullptr;
+	}
+
+	if (ULCPawnExtensionComponent* PawnExtensionComponent = ULCPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		if (const ULCPawnData* PawnData = PawnExtensionComponent->GetPawnData<ULCPawnData>())
+		{
+			return PawnData->DefaultCameraMode;
+		}
+	}
+	return nullptr;
 }

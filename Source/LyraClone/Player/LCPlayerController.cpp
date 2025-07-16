@@ -2,4 +2,10 @@
 
 
 #include "Player/LCPlayerController.h"
+#include "Camera/LCPlayerCameraManager.h"
 
+ALCPlayerController::ALCPlayerController(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	PlayerCameraManagerClass = ALCPlayerCameraManager::StaticClass();
+}

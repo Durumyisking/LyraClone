@@ -25,4 +25,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LC|Pawn")
 	TSubclassOf<APawn> PawnClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LC|Camera")
+	TSubclassOf<class ULCCameraMode> DefaultCameraMode;
+
 };

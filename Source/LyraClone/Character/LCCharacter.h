@@ -29,5 +29,9 @@ public:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LC|Character")
 	TObjectPtr<class ULCPawnExtensionComponent> PawnExtensionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LC|Character")
+	TObjectPtr<class ULCCameraComponent> CameraComponent;
+	
 	
 };
