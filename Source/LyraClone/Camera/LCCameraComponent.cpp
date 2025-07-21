@@ -26,11 +26,14 @@ void ULCCameraComponent::OnRegister()
 // 매 프레임 호출!
 void ULCCameraComponent::GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView)
 {
-	//Super::GetCameraView(DeltaTime, DesiredView);
-
 	check(CameraModeStack);
 	
 	UpdateCameraModes();
+
+	// EvaluateStack은 CameraStack에 있는 CameraMode를 업데이트, 블렌딩 하고 CameraModeStack의 Bottom->Top까지 업데이트된 CameraMode에 대해 보간을 진행한다.
+	// 이에 대한 결과는 CameraModeView에 캐싱된다.
+	FLCCameraModeView CameraModeView;
+	CameraModeStack->EvaluateStack(DeltaTime, CameraModeView);
 }
 
 void ULCCameraComponent::UpdateCameraModes()
@@ -40,9 +43,9 @@ void ULCCameraComponent::UpdateCameraModes()
 	// DetermineCameraModeDelegate is Bound To HeroComponent
 	if (DetermineCameraModeDelegate.IsBound())
 	{
-		if (const TSubclassOf<ULCCameraMode> CameraMode = DetermineCameraModeDelegate.Execute())
+		if (const TSubclassOf<ULCCameraMode> CameraMode = DetermineCameraModeDelegate.Execute()) // 현재 pawndata의 DefaultCameramode를 return한다.
 		{
-			// CameraModeStack->PushCameraMode(CameraMode);	
+			CameraModeStack->PushCameraMode(CameraMode);	
 		}
 	}
 }

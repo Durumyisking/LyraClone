@@ -5,9 +5,19 @@
 #include "CoreMinimal.h"
 #include "LCCameraMode.generated.h"
 
-/**
- * 
- */
+
+// 최종적으로 카메라가 렌더링 하는 영역
+struct FLCCameraModeView
+{
+	FLCCameraModeView();
+
+	FVector Location;
+	FRotator Rotation;
+	FRotator ControlRotation;
+	float FieldOfView;
+};
+
+
 // CameraBlending 대상 유닛
 UCLASS(Abstract, NotBlueprintable)
 class LYRACLONE_API ULCCameraMode : public UObject
@@ -15,6 +25,16 @@ class LYRACLONE_API ULCCameraMode : public UObject
 	GENERATED_BODY()
 public:
 	ULCCameraMode(const FObjectInitializer& ObjectInitializer);
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Blending")
+	float BlendTime;
+
+	/* 선형적인 Blend 값 [0~1]*/
+	float BlendAlpha;
+
+	// CameraMode의 최종 Blending값
+	float BlendWeight;
 	
 };
 
@@ -31,6 +51,12 @@ public:
 	 * Member Variables
 	 */
 
+	ULCCameraMode* GetCameraModeInstance(TSubclassOf<ULCCameraMode>& CameraModeClass);
+	void PushCameraMode(TSubclassOf<ULCCameraMode> CameraModeClass);
+	void EvaluateStack(float DeltaTime, FLCCameraModeView& OutCameraModeView);
+	void UpdateStack(float DeltaTime);
+	void BlendStack(FLCCameraModeView& OutCameraModeView) const;	
+	
 	// 생성된 CameraMode를 관리
 	UPROPERTY()
 	TArray<TObjectPtr<ULCCameraMode>> CameraModeInstance;
