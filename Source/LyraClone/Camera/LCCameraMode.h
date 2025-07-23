@@ -26,7 +26,32 @@ class LYRACLONE_API ULCCameraMode : public UObject
 public:
 	ULCCameraMode(const FObjectInitializer& ObjectInitializer);
 
+	/*
+ * Member Methods
+ */
+	void UpdateCameraMode(float DeltaTime);
 
+	virtual void UpdateView(float DeltaTime);
+	void UpdateBlending(float DeltaTime);
+
+	ULCCameraComponent* GetLCCameraComponent() const;
+	AActor* GetTargetActor() const;
+	FVector GetPivotLocation() const;
+	FRotator GetPivotRotation() const;
+	
+/*
+ * Member variables
+ */
+	FLCCameraModeView View;
+
+	UPROPERTY(EditDefaultsOnly, Category = "View", Meta = (UIMin = "5.0", UIMax = "170", ClampMin = "5.0", ClampMax = "170.0"))
+	float FieldOfView;
+
+	UPROPERTY(EditDefaultsOnly, Category = "View", Meta = (UIMin = "-89.9", UIMax = "89.9", ClampMin = "-89.9", ClampMax = "89.9"))
+	float ViewPitchMin;
+	UPROPERTY(EditDefaultsOnly, Category = "View", Meta = (UIMin = "-89.9", UIMax = "89.9", ClampMin = "-89.9", ClampMax = "89.9"))
+	float ViewPitchMax;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Blending")
 	float BlendTime;
 

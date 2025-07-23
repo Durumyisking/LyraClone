@@ -29,6 +29,8 @@ public:
 	// Member Method
 	static ULCCameraComponent* FindCameraComponent(class AActor* Actor) { return Actor? Actor->FindComponentByClass<ULCCameraComponent>() : nullptr; }
 	void UpdateCameraModes();
+
+	AActor* GetTargetActor() const { return GetOwner();}
 	
 	// Member Variables
 	// Camera Blending 기능을 지원하는 Stack

@@ -3,6 +3,7 @@
 
 #include "Camera/LCCameraMode.h"
 
+#include "LCCameraComponent.h"
 #include "LCPlayerCameraManager.h"
 
 FLCCameraModeView::FLCCameraModeView()
@@ -16,6 +17,82 @@ FLCCameraModeView::FLCCameraModeView()
 ULCCameraMode::ULCCameraMode(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
+	FieldOfView = LC_CAMERA_DEFAULT_FOV;
+	ViewPitchMin = LC_CAMERA_DEFAULT_PITCH_MIN;
+	ViewPitchMax = LC_CAMERA_DEFAULT_PITCH_MAX;
+
+	BlendTime = 0.f;
+	BlendAlpha = 1.f;
+	BlendWeight = 1.f;
+}
+
+void ULCCameraMode::UpdateCameraMode(float DeltaTime)
+{
+	// Actor를 활용하여, Pivot[Location,Rotation]을 계산하여 View 업데이트
+	UpdateView(DeltaTime);
+
+	// BlendingWeight, Deltatime을 활용하여 BlendAlpha 계산후 BlendFunction에 맞게 재매핑하여 최종 계산
+	UpdateBlending(DeltaTime);
+}
+
+void ULCCameraMode::UpdateView(float DeltaTime)
+{
+	// OwnerPawn의 Location과 ControlRotation을 활용하여 View업데이트
+	
+	// CameraMode를 가지고 있는 CameraComp의 Owner인 Character를 활용하여 Loc, Rot를 반환함
+	FVector PivotLocation = GetPivotLocation();
+	FRotator PivotRotation = GetPivotRotation();
+
+	// Pitch값에 대해 MinMax Clamp
+	PivotRotation.Pitch = FMath::ClampAngle(PivotRotation.Pitch, ViewPitchMin, ViewPitchMax);
+
+	// CameraView에 해당 Loc Rot 사용
+	View.Location = PivotLocation;
+	View.Rotation = PivotRotation;
+
+	// ControlRotation을 Pivot으로 사용
+	View.ControlRotation = PivotRotation;
+	View.FieldOfView = FieldOfView;
+}
+
+void ULCCameraMode::UpdateBlending(float DeltaTime)
+{
+}
+
+ULCCameraComponent* ULCCameraMode::GetLCCameraComponent() const
+{
+	return CastChecked<ULCCameraComponent>(GetOuter()); 
+}
+
+AActor* ULCCameraMode::GetTargetActor() const
+{
+	const ULCCameraComponent* LCCameraComponent = GetLCCameraComponent();
+	return LCCameraComponent->GetTargetActor();
+}
+FVector ULCCameraMode::GetPivotLocation() const
+{
+	const AActor* TargetActor = GetTargetActor();
+	check(TargetActor);
+
+	if (const APawn* TargetPawn = Cast<APawn>(TargetActor))
+	{
+		// BaseEyeHeigh(보통88)을 고려하여 ViewLocation을 반환
+		return TargetPawn->GetPawnViewLocation();
+	}
+	return TargetActor->GetActorLocation();
+}
+
+FRotator ULCCameraMode::GetPivotRotation() const
+{
+	const AActor* TargetActor = GetTargetActor();
+	check(TargetActor);
+
+	if (const APawn* TargetPawn = Cast<APawn>(TargetActor))
+	{
+		// 보통 Pawn의 ContolRotation반환 ContolRotation(마우스의 이동이 컨트롤러에 적용이되는데 그곳에있는 Rotation을 가져옴)
+		return TargetPawn->GetViewRotation();
+	}
+	return TargetActor->GetActorRotation();
 }
 
 ULCCameraModeStack::ULCCameraModeStack(const FObjectInitializer& ObjectInitializer)
