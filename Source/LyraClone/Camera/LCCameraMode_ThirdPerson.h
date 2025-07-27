@@ -15,4 +15,17 @@ class LYRACLONE_API ULCCameraMode_ThirdPerson : public ULCCameraMode
 	GENERATED_BODY()
 public:
 	ULCCameraMode_ThirdPerson(const FObjectInitializer& ObjectInitializer);
+
+	/*
+	 * ULCCameraMode Interface
+	 */
+	virtual void UpdateView(float DeltaTime) override;
+
+	/*
+	 * Member Variables
+	 */
+
+	UPROPERTY(EditDefaultsOnly, Category = "Third Person")
+	TObjectPtr<const class UCurveVector> TargetOffsetCurve;
+	
 };

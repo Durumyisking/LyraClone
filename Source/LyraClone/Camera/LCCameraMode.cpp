@@ -14,6 +14,30 @@ FLCCameraModeView::FLCCameraModeView()
 {
 }
 
+void FLCCameraModeView::Blend(const FLCCameraModeView& Other, float OtherWeight)
+{
+	if (OtherWeight > 0.0f)
+	{
+		return;
+	}
+	else if (OtherWeight >= 1.f) // 이미 블렌딩할필요가 없으면 Other의 데이터로 덮어씌운다
+	{
+		*this = Other; 
+		return;
+	}
+
+	Location = FMath::Lerp(Location, Other.Location, OtherWeight);
+
+	//const FRotator DeltaRotation = FMath::Lerp(Rotation, Other.Rotation, OtherWeight);
+	const FRotator DeltaRotation = (Other.Rotation - Rotation).GetNormalized();
+	Rotation = Rotation + (OtherWeight * DeltaRotation);
+
+	const FRotator DeltaControlRotation = (Other.ControlRotation - ControlRotation).GetNormalized();
+	ControlRotation = ControlRotation + (OtherWeight * DeltaControlRotation);
+
+	FieldOfView  = FMath::Lerp(FieldOfView, Other.FieldOfView, OtherWeight);
+}
+
 ULCCameraMode::ULCCameraMode(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
@@ -24,6 +48,9 @@ ULCCameraMode::ULCCameraMode(const FObjectInitializer& ObjectInitializer)
 	BlendTime = 0.f;
 	BlendAlpha = 1.f;
 	BlendWeight = 1.f;
+
+	BlendFunction = ELCCameraModeBlendFunction::EaseOut;
+	BlendExponent = 4.f;
 }
 
 void ULCCameraMode::UpdateCameraMode(float DeltaTime)
@@ -57,6 +84,39 @@ void ULCCameraMode::UpdateView(float DeltaTime)
 
 void ULCCameraMode::UpdateBlending(float DeltaTime)
 {
+	// BlendAlpha를 DeltaTime을 통해 계산
+	if (BlendTime > 0.f)
+	{
+		// BlendTime은 Blending 하는 과정 (초)
+		// BlendAlpha는 Blending Elapse
+		BlendAlpha += (DeltaTime / BlendTime);
+	}
+	else
+	{
+		BlendAlpha = 1.f;
+	}
+
+	// BlendWeight를 BlendFunction에 맞게 재매핑
+	const float Exponent = (BlendExponent > 0.f) ? BlendExponent : 1.f;
+	switch (BlendFunction)
+	{
+	case ELCCameraModeBlendFunction::Linear:
+		BlendWeight = BlendAlpha;
+		break;
+	case ELCCameraModeBlendFunction::EaseIn:
+		BlendWeight = FMath::InterpEaseIn(0.f ,1.f, BlendAlpha, Exponent);
+		break;
+	case ELCCameraModeBlendFunction::EaseOut:
+		BlendWeight = FMath::InterpEaseOut(0.f ,1.f, BlendAlpha, Exponent);
+		break;
+	case ELCCameraModeBlendFunction::EaseInOut:
+		BlendWeight = FMath::InterpEaseInOut(0.f ,1.f, BlendAlpha, Exponent);
+		break;
+	default:
+		checkf(false, TEXT("UpdateBlending : Invalid BlendFunction [%d]\n"), static_cast<uint8>(BlendFunction));
+		break;
+	}
+	
 }
 
 ULCCameraComponent* ULCCameraMode::GetLCCameraComponent() const
@@ -254,7 +314,7 @@ void ULCCameraModeStack::BlendStack(FLCCameraModeView& OutCameraModeView) const
 		return;
 	}
 
-	// CameraModeStack은 Bottom -> Top 순서로 Blend를 진행한다
+	// CameraModeStack은 Bottom -> Top(가장 나중 데이터부터 가장 최신데이터) 순서로 Blend를 진행한다
 	const ULCCameraMode* CameraMode = CameraModeStack[StackSize - 1];
 	check(CameraMode);
 
@@ -267,7 +327,7 @@ void ULCCameraModeStack::BlendStack(FLCCameraModeView& OutCameraModeView) const
 		CameraMode = CameraModeStack[StackIndex];
 		check(CameraMode);
 
-		// HakCameraModeView Blend 함수를 구현하자:
+		// Bottom View와 다른 CameraMode를 블렌딩한다
 		OutCameraModeView.Blend(CameraMode->View, CameraMode->BlendWeight);
 	}
 

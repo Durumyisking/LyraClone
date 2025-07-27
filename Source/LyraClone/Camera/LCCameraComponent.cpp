@@ -33,8 +33,41 @@ void ULCCameraComponent::GetCameraView(float DeltaTime, FMinimalViewInfo& Desire
 	// EvaluateStack은 CameraStack에 있는 CameraMode를 업데이트, 블렌딩 하고 CameraModeStack의 Bottom->Top까지 업데이트된 CameraMode에 대해 보간을 진행한다.
 	// 이에 대한 결과는 CameraModeView에 캐싱된다.
 	FLCCameraModeView CameraModeView;
-	CameraModeStack->EvaluateStack(DeltaTime, CameraModeView);
-}
+	CameraModeStack->EvaluateStack(DeltaTime, CameraModeView); // updatestack -> updateview -> updateblending -> BlendStack -> Blend
+
+	// 조종중인 Pawn에 Rotation반영
+	if ( APawn* TargetPawn = Cast<APawn>(GetTargetActor()))
+	{
+		if (APlayerController* PC = TargetPawn->GetController<APlayerController>())
+		{
+			// PlayerController의 ControlRotation을 게산된 CameraModeVIew의 ControlRotation으로 업데이트 한다.
+			// PC가 빙의중인 Pawn의 RootComponent에 ControlRotation를 반영한다.
+			PC->SetControlRotation(CameraModeView.ControlRotation);
+		}
+	}
+
+	// Camera의 Location, Rotation 반영
+	SetWorldLocationAndRotation(CameraModeView.Location, CameraModeView.Rotation);
+
+	// Fov 업데이트
+	FieldOfView = CameraModeView.FieldOfView;
+
+	DesiredView.Location = CameraModeView.Location;
+	DesiredView.Rotation = CameraModeView.Rotation;
+	DesiredView.FOV = CameraModeView.FieldOfView;
+	DesiredView.OrthoWidth = OrthoWidth;
+	DesiredView.OrthoNearClipPlane = OrthoNearClipPlane;
+	DesiredView.OrthoFarClipPlane = OrthoFarClipPlane;
+	DesiredView.AspectRatio = AspectRatio;
+	DesiredView.bConstrainAspectRatio = bConstrainAspectRatio;
+	DesiredView.bUseFieldOfViewForLOD = bUseFieldOfViewForLOD;
+	DesiredView.ProjectionMode = ProjectionMode;
+	DesiredView.PostProcessBlendWeight = PostProcessBlendWeight;
+	if (PostProcessBlendWeight > 0.f)
+	{
+		DesiredView.PostProcessSettings = PostProcessSettings;
+	}
+}	
 
 void ULCCameraComponent::UpdateCameraModes()
 {

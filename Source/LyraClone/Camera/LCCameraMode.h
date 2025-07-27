@@ -15,8 +15,23 @@ struct FLCCameraModeView
 	FRotator Rotation;
 	FRotator ControlRotation;
 	float FieldOfView;
+public:
+	void Blend(const FLCCameraModeView& Other, float OtherWeight);
 };
 
+UENUM(BlueprintType)
+enum class ELCCameraModeBlendFunction : uint8
+{
+	Linear,
+	/*
+	 * EaseInOut은 Exponent(함수의 강도)값에 의해 조절된다.
+	 */
+	EaseIn,
+	EaseOut,
+	EaseInOut,
+	COUNT
+	
+};
 
 // CameraBlending 대상 유닛
 UCLASS(Abstract, NotBlueprintable)
@@ -34,7 +49,7 @@ public:
 	virtual void UpdateView(float DeltaTime);
 	void UpdateBlending(float DeltaTime);
 
-	ULCCameraComponent* GetLCCameraComponent() const;
+	class ULCCameraComponent* GetLCCameraComponent() const;
 	AActor* GetTargetActor() const;
 	FVector GetPivotLocation() const;
 	FRotator GetPivotRotation() const;
@@ -60,7 +75,11 @@ public:
 
 	// CameraMode의 최종 Blending값
 	float BlendWeight;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "Blending")
+	float BlendExponent;
+
+	ELCCameraModeBlendFunction BlendFunction;
 };
 
 // Camera Blending을 담당하는 객체
