@@ -79,7 +79,7 @@ inline TSubclassOf<AssetType> ULCAssetManager::GetSubclass(const TSoftObjectPtr<
 		LoadedSubclass = AssetPointer.Get();
 		if (!LoadedSubclass)
 		{
-			LoadedSubclass = Cast<AssetType>(SynchronousLoadAsset(AssetPath));
+			LoadedSubclass = Cast<UClass>(SynchronousLoadAsset(AssetPath));
 			ensureAlwaysMsgf(LoadedSubclass, TEXT("Failed to load asset class [%s]"), *AssetPointer.ToString());
 		}
 

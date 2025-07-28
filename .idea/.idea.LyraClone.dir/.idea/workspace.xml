@@ -9,15 +9,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3d8a2135-afac-4ba0-bf7a-2af11089c030" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.LyraClone.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LyraClone.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/DefaultEngine.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultEngine.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/LyraClone.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/LyraClone.uproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Character/LCCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Character/LCCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Character/LCCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Character/LCCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Character/LCHeroComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Character/LCHeroComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Character/LCHeroComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Character/LCHeroComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Character/LCPawnData.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Character/LCPawnData.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Player/LCPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Player/LCPlayerController.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Player/LCPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Player/LCPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/LCGameplayTags.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/LCGameplayTags.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/LCGameplayTags.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/LCGameplayTags.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/System/LCAssetManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/System/LCAssetManager.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +38,6 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://3" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/Camera/LCCameraComponent.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/Camera/LCCameraComponent.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/Camera/LCCameraMode.cpp" root0="SKIP_HIGHLIGHTING" />
@@ -68,8 +62,8 @@
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/System/LCAssetManager.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/System/LCGameInstance.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/System/LCGameInstance.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/Camera/CameraComponent.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/GameplayTags/Private/GameplayTagsManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/Camera/CameraComponent.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/GameplayTags/Private/GameplayTagsManager.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -180,6 +174,7 @@
       <workItem from="1751719247535" duration="3000" />
       <workItem from="1751891692453" duration="2015000" />
       <workItem from="1752665379732" duration="3226000" />
+      <workItem from="1753700124490" duration="67000" />
     </task>
     <task id="LOCAL-00001" summary="---Objective---&#10;- ComponentManager에 GameplayTag사용 위한 초기 코드 세팅&#10;&#10;---Key Changes---&#10;- CustomGameplayTag로 사용할 LCGameplayTags 구조체 추가&#10;- 커스텀 GameInstance추가 및 Init 단계에서 UGameFrameworkComponentManager에 초기 State등록">
       <option name="closed" value="true" />

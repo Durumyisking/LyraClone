@@ -28,4 +28,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LC|Camera")
 	TSubclassOf<class ULCCameraMode> DefaultCameraMode;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LC|InputConfig")
+	TObjectPtr<class ULCInputConfig> InputConfig;
+	
 };

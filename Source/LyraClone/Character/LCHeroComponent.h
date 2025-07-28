@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
 #include "Components/GameFrameworkInitStateInterface.h"
+#include "Input/LCMappableConfigPair.h"
 #include "LCHeroComponent.generated.h"
 
 /**
@@ -35,4 +36,19 @@ public:
 
 	// Member Methods
 	TSubclassOf<class ULCCameraMode> DetermineCameraMode() const;
+	void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+
+	/*
+	 * InputActionMethods
+	 */
+	void Input_Move(const struct FInputActionValue& InputActionValue);
+	void Input_LookMouse(const struct FInputActionValue& InputActionValue);
+
+	
+	/*
+	 * Member Variables
+	 */
+	UPROPERTY(EditAnywhere)
+	TArray<FLCMappableConfigPair> DefaultInputConfigs;
 };
+

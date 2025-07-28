@@ -42,6 +42,7 @@ public:
 	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
 	virtual void CheckDefaultInitialization() final;
 
+
 	// PawnData 캐싱
 	UPROPERTY(EditInstanceOnly, Category = "LC|Pawn")
 	TObjectPtr<const class ULCPawnData> PawnData;

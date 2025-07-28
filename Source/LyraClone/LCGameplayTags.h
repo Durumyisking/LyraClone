@@ -24,6 +24,12 @@ struct FLCGameplayTags
 	FGameplayTag InitState_DataInitialized;
 	FGameplayTag InitState_GameplayReady;
 
+	/*
+	 * EnhancedInput Tags
+	 */
+	FGameplayTag InputTag_Move;
+	FGameplayTag InputTag_Look_Mouse;
+	
 private:
 	static FLCGameplayTags GameplayTags; // 싱글톤으로 쓸거임
 };

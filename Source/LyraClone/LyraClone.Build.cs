@@ -20,7 +20,12 @@ public class LyraClone : ModuleRules
 	        "ModularGameplay", 
 	        "GameFeatures",
 	        // GAS
-	        "GameplayTags" });
+	        "GameplayTags",
+			// Input
+			"InputCore",
+			"EnhancedInput",
+        
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
