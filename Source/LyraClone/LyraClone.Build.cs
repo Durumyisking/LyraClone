@@ -24,6 +24,8 @@ public class LyraClone : ModuleRules
 			// Input
 			"InputCore",
 			"EnhancedInput",
+			// CommonUser
+			"CommonUser",
         
         });
 
