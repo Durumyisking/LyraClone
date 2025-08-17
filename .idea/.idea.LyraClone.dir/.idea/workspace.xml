@@ -8,8 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d8a2135-afac-4ba0-bf7a-2af11089c030" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Content/System/DefaultEditormap/B_TeleportToUserFacingExperience.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/System/DefaultEditormap/B_TeleportToUserFacingExperience.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LyraClone.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LyraClone.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/System/DefaultEditormap/l_DefaultEditorOverview.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/System/DefaultEditormap/l_DefaultEditorOverview.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/System/Experience/B_LCDefaultExperience.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/System/Experience/B_LCDefaultExperience.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LyraClone.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/LyraClone.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/Character/LCHeroComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/Character/LCHeroComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCExperienceDefinition.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCExperienceDefinition.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCExperienceManagerComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCExperienceManagerComponent.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCExperienceManagerComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCExperienceManagerComponent.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCGameModeBase.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/LyraClone/GameModes/LCGameModeBase.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,8 +42,10 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/CommonSessionSubsystem.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/CommonSessionSubsystem.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://2" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/CommonUser/Intermediate/Build/Win64/UnrealEditor/Inc/CommonUser/UHT/CommonSessionSubsystem.gen.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Private/CommonSessionSubsystem.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Plugins/CommonUser/Source/CommonUser/Public/CommonSessionSubsystem.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/Camera/LCCameraComponent.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/Camera/LCCameraComponent.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/Camera/LCCameraMode.cpp" root0="FORCE_HIGHLIGHTING" />
@@ -61,7 +70,18 @@
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/System/LCAssetManager.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/System/LCGameInstance.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/LyraClone/System/LCGameInstance.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/CoreUObject/Public/UObject/Class.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectPtr.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/CoreUObject/Public/UObject/PrimaryAssetId.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Classes/Engine/World.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Classes/GameFramework/GameModeBase.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Classes/Materials/MaterialExpressionWorldPosition.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/AssetManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/Camera/CameraComponent.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/GameModeBase.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/StreamableManager.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/Engine/Private/World.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../UE_5.4/Engine/Source/Runtime/GameplayTags/Private/GameplayTagsManager.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -175,6 +195,10 @@
       <workItem from="1752665379732" duration="3226000" />
       <workItem from="1753700124490" duration="67000" />
       <workItem from="1753957695701" duration="308000" />
+      <workItem from="1754304513482" duration="796000" />
+      <workItem from="1754564185225" duration="2423000" />
+      <workItem from="1754906605444" duration="4498000" />
+      <workItem from="1754997311550" duration="933000" />
     </task>
     <task id="LOCAL-00001" summary="---Objective---&#10;- ComponentManager에 GameplayTag사용 위한 초기 코드 세팅&#10;&#10;---Key Changes---&#10;- CustomGameplayTag로 사용할 LCGameplayTags 구조체 추가&#10;- 커스텀 GameInstance추가 및 Init 단계에서 UGameFrameworkComponentManager에 초기 State등록">
       <option name="closed" value="true" />
@@ -184,7 +208,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751893654880</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="---Objective---&#10;- CommonSession기능 추가&#10;- PortalAsset에 Travel기능 적용 완료">
+      <option name="closed" value="true" />
+      <created>1754305255614</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1754305255614</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,7 +227,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="---Objective---&#10;- ComponentManager에 GameplayTag사용 위한 초기 코드 세팅&#10;&#10;---Key Changes---&#10;- CustomGameplayTag로 사용할 LCGameplayTags 구조체 추가&#10;- 커스텀 GameInstance추가 및 Init 단계에서 UGameFrameworkComponentManager에 초기 State등록" />
-    <option name="LAST_COMMIT_MESSAGE" value="---Objective---&#10;- ComponentManager에 GameplayTag사용 위한 초기 코드 세팅&#10;&#10;---Key Changes---&#10;- CustomGameplayTag로 사용할 LCGameplayTags 구조체 추가&#10;- 커스텀 GameInstance추가 및 Init 단계에서 UGameFrameworkComponentManager에 초기 State등록" />
+    <MESSAGE value="---Objective---&#10;- CommonSession기능 추가&#10;- PortalAsset에 Travel기능 적용 완료" />
+    <option name="LAST_COMMIT_MESSAGE" value="---Objective---&#10;- CommonSession기능 추가&#10;- PortalAsset에 Travel기능 적용 완료" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

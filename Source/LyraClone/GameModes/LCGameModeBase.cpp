@@ -12,6 +12,7 @@
 #include "Character/LCCharacter.h"
 #include "Character/LCPawnData.h"
 #include "Character/LCPawnExtensionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ALCGameModeBase::ALCGameModeBase()
 {
@@ -113,6 +114,15 @@ void ALCGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 	// - default experience
 
 	UWorld* World = GetWorld();
+
+	// ?Experience=Name? // 이렇게 파라미터가 넘어오는데 여기서 Name을 뽑아서 사용한다.
+	// ParseOption함수를 사용하면 Experience가 가리키는 값을 가져온다.
+	// 우리가 앞서, URL과 함께 ExtraArgs로 넘겼던 정보는 OptionString에 저장되어잇다.
+	if (!ExperienceId.IsValid() && UGameplayStatics::HasOption(OptionsString, TEXT("Experience")))
+	{
+		const FString ExperienceFromOptions = UGameplayStatics::ParseOption(OptionsString, TEXT("Experience"));
+		ExperienceId = FPrimaryAssetId(FPrimaryAssetType(ULCExperienceDefinition::StaticClass()->GetFName()), FName(*ExperienceFromOptions));
+	}
 
 	// fall back to the default experience
 	// 일단 기본 옵션으로 default하게 B_LcDefaultExperience로 설정 하자

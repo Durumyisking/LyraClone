@@ -21,6 +21,7 @@ public:
 	ULCHeroComponent(const FObjectInitializer& ObjectInitializer);
 
 	static const FName NAME_ActorFeatureName;
+	static const FName NAME_BindInputsNow;
 
 	// UPawnComponent Interface
 	virtual void OnRegister() final;

@@ -16,6 +16,7 @@
 #include "Player/LCPlayerController.h"
 
 const FName ULCHeroComponent::NAME_ActorFeatureName("Hero");
+const FName ULCHeroComponent::NAME_BindInputsNow("Input");
 
 ULCHeroComponent::ULCHeroComponent(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -243,7 +244,6 @@ void ULCHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompone
 					LCIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this ,&ThisClass::Input_Move, false);
 					LCIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this ,&ThisClass::Input_LookMouse, false);
 				}
-
 			}
 		}
 	}

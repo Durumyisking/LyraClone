@@ -4,12 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Components/GameStateComponent.h"
+#include "GameFeaturePluginOperationResult.h"
 #include "LCExperienceManagerComponent.generated.h"
 
 enum class ELCExperienceLoadState
 {
 	Unloaded,
 	Loading,
+	LoadingGameFeatures,
+	ExecutingActions,
 	Loaded,
 	Deactivating,
 };
@@ -38,6 +41,7 @@ public:
 
 	void StartExperienceLoad();
 	void OnExperienceLoadComplete();
+	void OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& Result);
 	void OnExperienceFullLoadCompleted();
 
 	const ULCExperienceDefinition* GetCurrentExperinenceChecked() const;
@@ -50,5 +54,9 @@ public:
 	ELCExperienceLoadState LoadState = ELCExperienceLoadState::Unloaded;
 
 	// Experience 로딩이 완료된 이후 Broadcasting Delegate
-	FOnLCExperienceLoaded OnExperienceLoaded; 
+	FOnLCExperienceLoaded OnExperienceLoaded;
+
+	/* 활성화된 Gamefeature Plugin들 */
+	int32 NumGameFeaturePluginsLoading = 0;
+	TArray<FString> GameFeaturePluginURLs;
 };

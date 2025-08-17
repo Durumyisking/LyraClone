@@ -2,7 +2,11 @@
 
 
 #include "GameModes/LCExperienceManagerComponent.h"
+
+#include "GameFeatureAction.h"
+#include "GameFeaturesSubsystem.h"
 #include "GameFeaturesSubsystemSettings.h"
+#include "LCExperienceActionSet.h"
 #include "System/LCAssetManager.h"
 #include "GameModes/LCExperienceDefinition.h"
 
@@ -51,7 +55,7 @@ void ULCExperienceManagerComponent::ServerSetCurrentExperience(FPrimaryAssetId E
 	StartExperienceLoad();
 }
 
-void ULCExperienceManagerComponent::StartExperienceLoad()
+void ULCExperienceManagerComponent::StartExperienceLoad() // Experience 에셋 로드
 {
 	check(CurrentExperience);
 	check(LoadState == ELCExperienceLoadState::Unloaded); // 로드 되어있으면 안된다
@@ -92,6 +96,8 @@ void ULCExperienceManagerComponent::StartExperienceLoad()
 			BundlesToLoad.Add(UGameFeaturesSubsystemSettings::LoadStateServer /*TEXT("Server")*/);
 		}
 	}
+
+																								// 에셋 로드 끝나면 여기로
 	FStreamableDelegate OnAssetsLoadedDelegate = FStreamableDelegate::CreateUObject(this, &ThisClass::OnExperienceLoadComplete);
 
 	// 아래도, 후일 Bundle을 우리가 GameFeature에 연동하면서 더 깊게 알아보기로 하고 일단 디폴트Experience를 로딩해주는 함수라고 생각하자.
@@ -117,17 +123,104 @@ void ULCExperienceManagerComponent::StartExperienceLoad()
 	}
 }
 
-void ULCExperienceManagerComponent::OnExperienceLoadComplete()
+void ULCExperienceManagerComponent::OnExperienceLoadComplete() // GameFeature로드 및 활성화
 {
-	// check Framenubmer
+	// Look FrameNumber carefully
 	static int32 OnExperienceLoadComplete_FrameNumber = GFrameNumber;
 
+	check(LoadState == ELCExperienceLoadState::Loading);
+	check(CurrentExperience);
+
+	// 이전 활성화된 GameFeature Plugin의 URL 클리어
+	GameFeaturePluginURLs.Reset();
+
+	auto CollectGameFeaturePluginURLS = [This = this] (const UPrimaryDataAsset* Context, const TArray<FString>& FeaturePluginList)
+	{
+		// GameFeaturePluginList를 순회하며, PluginUYRL을 ExperienceManagerComponent의 GameFeaturePluginURLS에 추가해준다.
+		for (const FString& PluginName : FeaturePluginList)
+		{
+			FString PluginURL;
+			if (UGameFeaturesSubsystem::Get().GetPluginURLByName(PluginName, PluginURL)) // 플러그인 이름 넣으면 플러그인 URL반환해주는 함수
+			{
+				This->GameFeaturePluginURLs.AddUnique(PluginURL);
+			}
+		}
+	};
+
+	// GameFeaturesToEnable에 있는 Plugin만 일단 활성화할 GameFeature Plugin 후보군으로 등록
+	CollectGameFeaturePluginURLS(CurrentExperience, CurrentExperience->GameFeaturesToEnable);
+
+	// GameFeaturePluginURL에 등록된 Plugin을 로딩 및 활성화
+	NumGameFeaturePluginsLoading = GameFeaturePluginURLs.Num();
+	if ( NumGameFeaturePluginsLoading )
+	{
+		LoadState = ELCExperienceLoadState::LoadingGameFeatures;
+		for (const FString& PluginURL : GameFeaturePluginURLs)
+		{
+			// 매 plugin이 로딩 및 활성화 이후 OnGameFeaturePluginLoadComplete 콜백 함수 등록															// 로드 끝나면 해당 함수 호출된다.
+			UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginURL, FGameFeaturePluginLoadComplete::CreateUObject(this ,&ThisClass::OnGameFeaturePluginLoadComplete));
+			
+		}
+	}
+}
+
+void ULCExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& Result)
+{
+	// 매 GameFeature plugin이 로딩될 때 이 함수가 콜백으로 불린다.
+	NumGameFeaturePluginsLoading--;
+	if (0 == NumGameFeaturePluginsLoading)
+	{
+		// GameFeaturePlugin 로딩과 활성화과 끝났다면 UGameFeatureAction을 활성화한다.
+		OnExperienceFullLoadCompleted();
+	}
+	
 	// 해당 함수가 불리는 것은 앞서 보았던 StreamableDelegateDelayHelper에 의해 불림
-	OnExperienceFullLoadCompleted();
 }
 
 void ULCExperienceManagerComponent::OnExperienceFullLoadCompleted()
 {
+	check(LoadState != ELCExperienceLoadState::Loaded);
+	// 여기서 Action이 실행된다.
+	// GameFeature Plugin의 로딩과 활성화 이후 GameFeature Action들을 활성화 시키자
+	{
+		LoadState = ELCExperienceLoadState::ExecutingActions;
+
+		// GameFeatureAction 활성화를 위한 Context준비
+		FGameFeatureActivatingContext Context;
+		{
+			// World의 Handle세팅
+
+			UWorld* World = GetWorld();
+ 			const FWorldContext* ExistingWorldContext = GEngine->GetWorldContextFromWorld(World);
+			if (ExistingWorldContext)
+			{
+				Context.SetRequiredWorldContextHandle(ExistingWorldContext->ContextHandle);	
+			}
+		}
+		auto ActivateListOfActions = [&Context](const TArray<UGameFeatureAction*>&	ActionList)
+		{
+			for (UGameFeatureAction* Action : ActionList)
+			{
+				// 명시적으로 GameFeatureAction에 대해 Registering -> Loading -> Activating순으로 호출한다.
+				if (Action)
+				{
+					Action->OnGameFeatureLoading();
+					Action->OnGameFeatureLoading();
+					Action->OnGameFeatureActivating(Context);
+				}
+			}
+		};
+
+		// 1. Experience의 actions
+		ActivateListOfActions(CurrentExperience->Actions);
+
+		// 2. Experience의 ActionSets
+		for (const ULCExperienceActionSet* ActionSet : CurrentExperience->ActionSets)
+		{
+			ActivateListOfActions(ActionSet->Actions);
+		}
+	}
+	
 	LoadState = ELCExperienceLoadState::Loaded;
 	OnExperienceLoaded.Broadcast(CurrentExperience);
 	OnExperienceLoaded.Clear();
