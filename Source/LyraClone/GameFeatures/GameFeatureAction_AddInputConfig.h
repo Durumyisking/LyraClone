@@ -27,6 +27,7 @@ public:
 	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) override;
 
 private:
+	// 각 Client의 Context들을 들고있는 느낌이다.
 	struct FPerContextData
 	{
 		TArray<TSharedPtr<FComponentRequestHandle>> ExtensionRequestHandles;
@@ -43,7 +44,7 @@ private:
 	/** ActiveData를 초기화 */
 	void Reset(FPerContextData& ActiveData);
 
-	/** world -> (extension request, pawn) */
+	/** world -> (extension request, pawn) */ 	// 각 Client의 Context들을 들고있는 느낌이다.
 	TMap<FGameFeatureStateChangeContext, FPerContextData> ContextData;
 
 	UPROPERTY(EditAnywhere)

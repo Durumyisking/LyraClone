@@ -247,6 +247,8 @@ void ULCHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompone
 			}
 		}
 	}
+	// GameFeatureAction_AddInputConfig의 HandlePawnExtension 콜백 함수 전달.
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APawn*>(Pawn), NAME_BindInputsNow);
 }
 
 void ULCHeroComponent::Input_Move(const FInputActionValue& InputActionValue)

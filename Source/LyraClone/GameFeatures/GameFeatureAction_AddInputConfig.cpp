@@ -7,6 +7,7 @@
 
 void UGameFeatureAction_AddInputConfig::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
+	// PIE에서 생길 수 있는 오류 예외처리
 	FPerContextData& ActiveData = ContextData.FindOrAdd(Context);
 	if (!ensure(ActiveData.ExtensionRequestHandles.IsEmpty()) ||
 		!ensure(ActiveData.PawnsAddedTo.IsEmpty()))
@@ -36,14 +37,19 @@ void UGameFeatureAction_AddInputConfig::AddToWorld(const FWorldContext& WorldCon
 
 	if (GameInstance && World && World->IsGameWorld())
 	{
-
-		if (UGameFrameworkComponentManager* ComponentMan = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
+		// UGameFrameworkComponentManager(GFCM)를 이용해 ExtensionHandler를 추가하여 등록 진행
+		// -HandlePawnExtension 콜백 함수로 연결
+		if (UGameFrameworkComponentManager* ComponentManager = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
 		{
+			// 클래스 내에 using FExtensionHandlerDelegate = FExtensionHandlerDelegateInternal;이렇게 선언되어있음
 			UGameFrameworkComponentManager::FExtensionHandlerDelegate AddConfigDelegate =
 				UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(this, &ThisClass::HandlePawnExtension, ChangeContext);
 
+			// 등록된 콜백 함수의 핸들을 ActiveData의 ExtensionRequestHandle에 등록
+			// 모든 Pawn에게 Call이 오면 AddConfigDelegate를 호출하도록 해준것
 
-			TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle = ComponentMan->AddExtensionHandler(APawn::StaticClass(), AddConfigDelegate);
+			// 즉 Config가 추가될때 호출되는 델리게이트를 PerContextData의 ExtensionRequestHandles에 추가한 것이다.
+			TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle = ComponentManager->AddExtensionHandler(APawn::StaticClass(), AddConfigDelegate);
 			ActiveData.ExtensionRequestHandles.Add(ExtensionRequestHandle);
 		}
 	}
@@ -116,15 +122,15 @@ void UGameFeatureAction_AddInputConfig::RemoveInputConfig(APawn* Pawn, FPerConte
 
 void UGameFeatureAction_AddInputConfig::HandlePawnExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext)
 {
-	APawn* AsPawn = CastChecked<APawn>(Actor);
-	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
-
-	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName == ULCHeroComponent::NAME_BindInputsNow)
-	{
-		AddInputConfig(AsPawn, ActiveData);
-	}
-	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved )
-	{
-		RemoveInputConfig(AsPawn, ActiveData);
-	}
-}
+ 	APawn* AsPawn = CastChecked<APawn>(Actor);
+ 	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
+ 
+ 	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName == ULCHeroComponent::NAME_BindInputsNow)
+ 	{
+ 		AddInputConfig(AsPawn, ActiveData);
+ 	}
+ 	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved )
+ 	{
+ 		RemoveInputConfig(AsPawn, ActiveData);
+ 	}
+ }
